@@ -1,0 +1,189 @@
+<!--
+ (c) 2016 Boundless, http://boundlessgeo.com
+ This work is licensed under CC-BY-SA 3.0 US License. 
+-->
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : QGIS Auth Plugin Workshop</title>
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/extra.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="top" title="QGIS Auth Plugin Workshop 1.0 documentation" href="#" />
+      <link rel="next" title="Authentication System Technical Overview" href="overview.html" />
+<style>
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Oblique.ttf'); font-weight:oblique; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Bold.ttf'); font-weight:bold; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Regular.ttf'); }
+  @font-face { font-family: proxima-nova-light; src: url('_static/ProximaNova-Light.ttf'); }
+  @font-face { font-family: proxima-nova-semibold; src: url('_static/ProximaNova-SBold.ttf'); }
+  @font-face { font-family: Source Code Pro; src: url('_static/SourceCodePro-Regular.ttf'); }
+</style>
+
+<link rel="stylesheet" id="style-css" href="_static/style.css" type="text/css" media="all">
+
+</head>
+<body class="page">
+
+    <div id="wrapper">
+                <header id="masthead" class="site-header" role="banner">
+            <div class="container">
+                <a href="http://boundlessgeo.com" rel="home" id="logo"><img src="_static/logo.png"></a>
+                <div class="pull-right">
+                    <div class="pull-left">
+                        <div class="menu-main-container">
+                        </div>
+                    </div>
+                    <!--
+                    <div class="search dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="search-icon"></i></a>
+                          <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <form class="search" action="search.html" method="get">
+                                  <label for="q" class="screen-reader-text">Search</label>
+                                  <input type="text" class="field" name="q" placeholder="Search …" />
+                                  <input type="submit" class="submit" value="Go" />
+                                  <input type="hidden" name="check_keywords" value="yes" />
+                                  <input type="hidden" name="area" value="default" />
+                                </form>
+                          </div>
+                    </div>-->
+                </div>
+            </div><!--closes container-->
+
+        </header><div id="pageheading"><div class="contents"><h1>QGIS Auth Plugin Workshop</h1></div></div>
+
+  <div id="content" class="contents">
+<div id="breadcrumbs">
+  <a href="#">QGIS Auth Plugin Workshop</a>
+  
+</div>
+
+  <div id="rightbar_main">
+      
+  <div class="section" id="qgis-authentication-system-method-plugins-workshop">
+<h1>QGIS Authentication System Method Plugins Workshop<a class="headerlink" href="#qgis-authentication-system-method-plugins-workshop" title="Permalink to this headline">¶</a></h1>
+<p>2016 Girona, Spain, 2nd International QGIS Conference</p>
+<p>This workshop introduces the new QGIS authentication system, since v2.12, its
+plugin infrastructure, and how it can be used in secure connections. The worksop
+will cover crafting a new method plugin to show how easily QGIS can be extended
+to fit new authentication requirements for a variety of endpoints. Also included
+are examples of using the new authentication system in a PyQGIS plugin and a
+data provider.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Knowledge of C++ (authentication plugins are currently only supported for
+C++) and a working build environment for QGIS master or 2.14 branch. User
+must be able to compile QGIS and, ideally, already have compiled it</p>
+</div>
+<p>Documentation contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Authentication System Technical Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#auth-specific-contents-of-src">Auth-specific Contents of SRC</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Authentication Method Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#initial-design">Initial Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#integrate-with-qtnetwork">Integrate with QtNetwork</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#integration-with-qgsdatasourceuri">Integration with QgsDataSourceURI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#other-integrations">Other integrations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="integrations.html">Authentication System Integrations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="integrations.html#data-provider-integrations">Data provider integrations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integrations.html#plugin-manager-integration">Plugin Manager integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Auth Method Plugins Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#simple-example-http-basic">Simple example: HTTP Basic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#complex-example-pki">Complex example: PKI</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pyqgis.html">PyQGIS Auth System Bindings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pyqgis.html#what-s-included">What&#8217;s included</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyqgis.html#what-s-not-included">What&#8217;s not included</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pyqgis.html#authcfg-example">AuthCfg Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="oauth.html">OAuth Method Plugin Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html#oauth-overview">OAuth overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html#test-endpoints">Test endpoints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html#plugin-contents">Plugin contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html#o2-dependency">O2 dependency</a></li>
+<li class="toctree-l2"><a class="reference internal" href="oauth.html#compiling">Compiling</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+      <!-- Next/Prev -->
+      <div class="selfclear pagination-nav">
+          <div class="right"><strong>Next</strong>: <a href="overview.html" title="next chapter">Authentication System Technical Overview</a></div>
+      </div>
+
+  <!--
+    &copy; Copyright 2016, Boundless
+  -->
+
+  </div> <!-- rightbar_main -->
+
+  <div id="rightbar_bar">
+    
+        <div class="section">
+          <h3>Continue Reading</h3>
+          <p><b>Next:</b> <a href="overview.html" title="next chapter">Authentication System Technical Overview</a></p>
+          </ul>
+        </div>
+        <div class="section">
+        <h4>This Page</h4>
+        <ul class="this-page-menu">
+          <li><a href="_sources/index.txt">Show Source</a></li>
+        </ul>
+        </div>
+
+   <h4>About Boundless</h4>
+   <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png" /></a></p>
+<!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="overview.html" title="Authentication System Technical Overview"
+       accesskey="N">next</a></li>
+</ul> -->
+  </div> <!-- rightbar_bar -->
+
+  </div> <!-- content -->
+  <div id="footer">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="span12 footer-sub-menu">
+                    <div class="menu-footer-menu-container">
+                        <ul id="menu-footer-menu" class="menu">
+                            <li>
+    <a href="http://boundlessgeo.com/">&copy; Copyright 2016, Boundless</a>
+                            </li>
+                            <li><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div><!-- footer -->
+
+</div><!-- container -->
+
+<!--<script type="text/javascript" src="_static/dropdown.js"></script>-->
+
+  </body>
+</html>

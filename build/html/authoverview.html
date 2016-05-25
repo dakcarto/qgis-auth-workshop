@@ -1,0 +1,205 @@
+<!--
+ (c) 2016 Boundless, http://boundlessgeo.com
+ This work is licensed under CC-BY-SA 3.0 US License. 
+-->
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : QGIS Auth Plugin Workshop : Autentication System Technical Overview</title>
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/extra.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="top" title="QGIS Auth Plugin Workshop 1.0 documentation" href="index.html" />
+<style>
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Oblique.ttf'); font-weight:oblique; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Bold.ttf'); font-weight:bold; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Regular.ttf'); }
+  @font-face { font-family: proxima-nova-light; src: url('_static/ProximaNova-Light.ttf'); }
+  @font-face { font-family: proxima-nova-semibold; src: url('_static/ProximaNova-SBold.ttf'); }
+  @font-face { font-family: Source Code Pro; src: url('_static/SourceCodePro-Regular.ttf'); }
+</style>
+
+<link rel="stylesheet" id="style-css" href="_static/style.css" type="text/css" media="all">
+
+</head>
+<body class="page">
+
+    <div id="wrapper">
+                <header id="masthead" class="site-header" role="banner">
+            <div class="container">
+                <a href="http://boundlessgeo.com" rel="home" id="logo"><img src="_static/logo.png"></a>
+                <div class="pull-right">
+                    <div class="pull-left">
+                        <div class="menu-main-container">
+                        </div>
+                    </div>
+                    <!--
+                    <div class="search dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="search-icon"></i></a>
+                          <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <form class="search" action="search.html" method="get">
+                                  <label for="q" class="screen-reader-text">Search</label>
+                                  <input type="text" class="field" name="q" placeholder="Search …" />
+                                  <input type="submit" class="submit" value="Go" />
+                                  <input type="hidden" name="check_keywords" value="yes" />
+                                  <input type="hidden" name="area" value="default" />
+                                </form>
+                          </div>
+                    </div>-->
+                </div>
+            </div><!--closes container-->
+
+        </header><div id="pageheading"><div class="contents"><h1>QGIS Auth Plugin Workshop</h1></div></div>
+
+  <div id="content" class="contents">
+<div id="breadcrumbs">
+  <a href="index.html">QGIS Auth Plugin Workshop</a>
+  
+     &raquo; <a href="">Autentication System Technical Overview</a>
+</div>
+
+  <div id="rightbar_main">
+      
+  <div class="section" id="autentication-system-technical-overview">
+<span id="auth-overview"></span><h1>Autentication System Technical Overview<a class="headerlink" href="#autentication-system-technical-overview" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center">
+<img alt="_images/auth-configwidget_create.png" src="_images/auth-configwidget_create.png" />
+</div>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">QgsAuthManager</span></code> [src/core/auth/qgsauthmanager.h]</p>
+<blockquote>
+<div><ul class="simple">
+<li>Singleton that oversees all master password and auth database functions and
+marshalling of auth methods</li>
+<li>Instantiates in <code class="docutils literal"><span class="pre">QgsApplication::initQgis()</span></code> and cleans up in
+<code class="docutils literal"><span class="pre">QgsApplication::exitQgis()</span></code></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">QgsAuthCrypto</span></code> [src/core/auth/qgsauthcrypto.h]</p>
+<blockquote>
+<div><ul class="simple">
+<li>Simple interface for hashing/verifying master password and encrypt/decrypt
+operations on auth configs with master password.</li>
+<li>Currently uses <cite>Qt Cryptographic Architecture</cite> (QCA), though originally
+designed for <a class="reference external" href="http://www.cryptopp.com/">CryptoPP</a>, which was found to be <em>way too finicky</em> to <a class="reference external" href="http://www.codeproject.com/Articles/16388/Compiling-and-Integrating-Crypto-into-the-Microsof">build
+on Windows</a>, especially for non-devs.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">QgsAuthMethodConfig*</span></code> [src/core/auth/qgsauthmethodconfig.h]</p>
+<blockquote>
+<div><ul class="simple">
+<li>Class representing auth method configs</li>
+<li>Has public properties that can generally be queried <em>without</em> requiring the
+user to input the master password</li>
+<li>Has sensitive properties that become semi-public once the master password
+is set/verified and the config has been retrieved and decrypted from the
+auth database by the auth manager</li>
+<li>Has sensitive properties that can be set and then encrypted and stored in
+the auth database by the auth manager</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">QgsAuthMethod</span></code> [src/core/auth/qgsauthmethod.h] and <code class="docutils literal"><span class="pre">QgsAuthMethodEdit</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li>Class and edit widget that comprise an auth config method plugin</li>
+<li>Each method accepts marshaled calls from the auth manager to update
+authentication-specific objects when needed, e.g. <code class="docutils literal"><span class="pre">QNetworkRequest</span></code> and
+<code class="docutils literal"><span class="pre">DataSourceURI</span></code>, during resource connections</li>
+<li>Each method has an in-memory cache of authentication objects, generated
+during the processing of an auth config, that are stored upon first
+access/load of the config. Subsequent calls use the cached resource, e.g.
+generated SSL certificate, key and CA chain objects.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">QgsAuthMethodRegistry</span></code> [src/core/auth/qgsauthmethodregistry.h]  and</dt>
+<dd><p class="first"><code class="docutils literal"><span class="pre">QgsAuthMethodMetadata</span></code></p>
+<ul class="last simple">
+<li>Singleton plugin registry modeled after <code class="docutils literal"><span class="pre">QgsProviderRegistry</span></code></li>
+<li>Loads plugins with <code class="docutils literal"><span class="pre">lib*authmethod.(so|dll)</span></code> name pattern</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">QgsAuthConfigEdit</span></code> [src/gui/auth/qgsauthconfigedit.h]</p>
+<blockquote>
+<div><ul class="simple">
+<li>An embeddable or standalone widget for creating/editing auth configs
+directly in the auth database</li>
+<li>Depending upon method, does lightweight validation, e.g. cert issue dates</li>
+</ul>
+<div class="figure align-center" id="id1">
+<img alt="_images/auth-configwidget_create.png" src="_images/auth-configwidget_create.png" />
+<p class="caption"><span class="caption-text">Standalone config creation</span></p>
+</div>
+<div class="figure align-center" id="id2">
+<img alt="_images/auth-config-create_pkcs12-paths.png" src="_images/auth-config-create_pkcs12-paths.png" />
+<p class="caption"><span class="caption-text">Standalone with existing config in edit mode</span></p>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+
+
+
+  <!--
+    &copy; Copyright 2016, Boundless
+  -->
+
+  </div> <!-- rightbar_main -->
+
+  <div id="rightbar_bar">
+    
+        <div class="section">
+        <h4>This Page</h4>
+        <ul class="this-page-menu">
+          <li><a href="_sources/authoverview.txt">Show Source</a></li>
+        </ul>
+        </div>
+
+   <h4>About Boundless</h4>
+   <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png" /></a></p>
+<!--
+<ul id="relatedlinks" class="selfclear">
+</ul> -->
+  </div> <!-- rightbar_bar -->
+
+  </div> <!-- content -->
+  <div id="footer">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="span12 footer-sub-menu">
+                    <div class="menu-footer-menu-container">
+                        <ul id="menu-footer-menu" class="menu">
+                            <li>
+    <a href="http://boundlessgeo.com/">&copy; Copyright 2016, Boundless</a>
+                            </li>
+                            <li><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div><!-- footer -->
+
+</div><!-- container -->
+
+<!--<script type="text/javascript" src="_static/dropdown.js"></script>-->
+
+  </body>
+</html>

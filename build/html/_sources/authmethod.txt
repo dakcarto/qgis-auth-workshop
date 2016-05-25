@@ -1,0 +1,24 @@
+.. _auth_method_plugins:
+
+Authentication Method Plugins
+=============================
+
+.. _method_initial_design:
+
+Initial Design
+--------------
+
+
+
+.. _integrate-qtnetwork:
+
+Integrate with QtNetwork
+------------------------
+
+
+
+.. _integrate-qgsdatasourceuri:
+
+Integration with QgsDataSourceURI
+---------------------------------
+

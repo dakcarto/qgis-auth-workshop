@@ -1,0 +1,338 @@
+<!--
+ (c) 2016 Boundless, http://boundlessgeo.com
+ This work is licensed under CC-BY-SA 3.0 US License. 
+-->
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : QGIS Auth Plugin Workshop : Authentication System Technical Overview</title>
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/extra.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="top" title="QGIS Auth Plugin Workshop 1.0 documentation" href="index.html" />
+      <link rel="next" title="Authentication Method Plugins" href="plugins.html" />
+      <link rel="prev" title="QGIS Authentication System Method Plugins Workshop" href="index.html" />
+<style>
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Oblique.ttf'); font-weight:oblique; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Bold.ttf'); font-weight:bold; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Regular.ttf'); }
+  @font-face { font-family: proxima-nova-light; src: url('_static/ProximaNova-Light.ttf'); }
+  @font-face { font-family: proxima-nova-semibold; src: url('_static/ProximaNova-SBold.ttf'); }
+  @font-face { font-family: Source Code Pro; src: url('_static/SourceCodePro-Regular.ttf'); }
+</style>
+
+<link rel="stylesheet" id="style-css" href="_static/style.css" type="text/css" media="all">
+
+</head>
+<body class="page">
+
+    <div id="wrapper">
+                <header id="masthead" class="site-header" role="banner">
+            <div class="container">
+                <a href="http://boundlessgeo.com" rel="home" id="logo"><img src="_static/logo.png"></a>
+                <div class="pull-right">
+                    <div class="pull-left">
+                        <div class="menu-main-container">
+                        </div>
+                    </div>
+                    <!--
+                    <div class="search dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="search-icon"></i></a>
+                          <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <form class="search" action="search.html" method="get">
+                                  <label for="q" class="screen-reader-text">Search</label>
+                                  <input type="text" class="field" name="q" placeholder="Search …" />
+                                  <input type="submit" class="submit" value="Go" />
+                                  <input type="hidden" name="check_keywords" value="yes" />
+                                  <input type="hidden" name="area" value="default" />
+                                </form>
+                          </div>
+                    </div>-->
+                </div>
+            </div><!--closes container-->
+
+        </header><div id="pageheading"><div class="contents"><h1>QGIS Auth Plugin Workshop</h1></div></div>
+
+  <div id="content" class="contents">
+<div id="breadcrumbs">
+  <a href="index.html">QGIS Auth Plugin Workshop</a>
+  
+     &raquo; <a href="">Authentication System Technical Overview</a>
+</div>
+
+  <div id="rightbar_main">
+      
+  <div class="section" id="authentication-system-technical-overview">
+<span id="auth-overview"></span><h1>Authentication System Technical Overview<a class="headerlink" href="#authentication-system-technical-overview" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center">
+<img alt="_images/auth-system-tech-overview.png" src="_images/auth-system-tech-overview.png" />
+</div>
+<p><strong>QgsAuthManager</strong> [<code class="docutils literal"><span class="pre">src/core/auth/qgsauthmanager.h</span></code>]</p>
+<ul class="simple">
+<li>Singleton that oversees all master password and auth database functions and
+marshalling of auth methods</li>
+<li>Instantiates in <code class="docutils literal"><span class="pre">QgsApplication::initQgis()</span></code> and cleans up in
+<code class="docutils literal"><span class="pre">QgsApplication::exitQgis()</span></code></li>
+</ul>
+<p><strong>QgsAuthCrypto</strong> [<code class="docutils literal"><span class="pre">src/core/auth/qgsauthcrypto.h</span></code>]</p>
+<ul class="simple">
+<li>Simple interface for hashing/verifying master password and encrypt/decrypt
+operations on auth configs with master password.</li>
+<li>Currently uses <cite>Qt Cryptographic Architecture</cite> (QCA), though originally
+designed for <a class="reference external" href="http://www.cryptopp.com/">CryptoPP</a>, which was found to be <em>way too finicky</em> to <a class="reference external" href="http://www.codeproject.com/Articles/16388/Compiling-and-Integrating-Crypto-into-the-Microsof">build
+on Windows</a>, especially for non-devs.</li>
+</ul>
+<p><strong>QgsAuthMethodConfig</strong> [<code class="docutils literal"><span class="pre">src/core/auth/qgsauthmethodconfig.h</span></code>]</p>
+<ul class="simple">
+<li>Class representing auth method configs</li>
+<li>Has public properties that can generally be queried <em>without</em> requiring the
+user to input the master password</li>
+<li>Has sensitive properties that become semi-public once the master password
+is set/verified and the config has been retrieved and decrypted from the
+auth database by the auth manager</li>
+<li>Has sensitive properties that can be set and then encrypted and stored in
+the auth database by the auth manager</li>
+</ul>
+<p><strong>QgsAuthMethod</strong> [<code class="docutils literal"><span class="pre">src/core/auth/qgsauthmethod.h</span></code>] and <strong>QgsAuthMethodEdit</strong></p>
+<ul class="simple">
+<li>Class and edit widget that comprise an auth config method plugin</li>
+<li>Each method accepts marshaled calls from the auth manager to update
+authentication-specific objects when needed, e.g. <code class="docutils literal"><span class="pre">QNetworkRequest</span></code> and
+<code class="docutils literal"><span class="pre">DataSourceURI</span></code>, during resource connections</li>
+<li>Each method has an in-memory cache of authentication objects, generated
+during the processing of an auth config, that are stored upon first
+access/load of the config. Subsequent calls use the cached resource, e.g.
+generated SSL certificate, key and CA chain objects.</li>
+</ul>
+<p><strong>QgsAuthMethodRegistry</strong>
+[<code class="docutils literal"><span class="pre">src/core/auth/qgsauthmethodregistry.h</span></code>] and <strong>QgsAuthMethodMetadata</strong></p>
+<ul class="simple">
+<li>Singleton plugin registry modeled after <code class="docutils literal"><span class="pre">QgsProviderRegistry</span></code></li>
+<li>Loads plugins with <code class="docutils literal"><span class="pre">lib*authmethod.(so|dll)</span></code> name pattern</li>
+</ul>
+<p><strong>QgsAuthConfigEdit</strong> [<code class="docutils literal"><span class="pre">src/gui/auth/qgsauthconfigedit.h</span></code>]</p>
+<ul class="simple">
+<li>An embeddable or standalone widget for creating/editing auth configs
+directly in the auth database</li>
+<li>Depending upon method, does lightweight validation, e.g. cert issue dates</li>
+</ul>
+<div class="figure align-center" id="id1">
+<img alt="_images/auth-configwidget_create.png" src="_images/auth-configwidget_create.png" />
+<p class="caption"><span class="caption-text">Standalone config creation</span></p>
+</div>
+<div class="figure align-center" id="id2">
+<img alt="_images/auth-config-create_pkcs12-paths.png" src="_images/auth-config-create_pkcs12-paths.png" />
+<p class="caption"><span class="caption-text">Standalone with existing config in edit mode</span></p>
+</div>
+<div class="section" id="auth-specific-contents-of-src">
+<h2>Auth-specific Contents of SRC<a class="headerlink" href="#auth-specific-contents-of-src" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>├── auth (method plugins)
+│   ├── basic
+│   │   ├── qgsauthbasicedit.cpp
+│   │   ├── qgsauthbasicedit.h
+│   │   ├── qgsauthbasicedit.ui
+│   │   ├── qgsauthbasicmethod.cpp
+│   │   └── qgsauthbasicmethod.h
+│   ├── identcert
+│   │   ├── qgsauthidentcertedit.cpp
+│   │   ├── qgsauthidentcertedit.h
+│   │   ├── qgsauthidentcertedit.ui
+│   │   ├── qgsauthidentcertmethod.cpp
+│   │   └── qgsauthidentcertmethod.h
+│   ├── pkipaths
+│   │   ├── qgsauthpkipathsedit.cpp
+│   │   ├── qgsauthpkipathsedit.h
+│   │   ├── qgsauthpkipathsedit.ui
+│   │   ├── qgsauthpkipathsmethod.cpp
+│   │   └── qgsauthpkipathsmethod.h
+│   └── pkipkcs12
+│       ├── qgsauthpkcs12edit.cpp
+│       ├── qgsauthpkcs12edit.h
+│       ├── qgsauthpkcs12edit.ui
+│       ├── qgsauthpkcs12method.cpp
+│       └── qgsauthpkcs12method.h
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span>├── core
+│   ├── auth
+│   │   ├── qgsauthcertutils.cpp
+│   │   ├── qgsauthcertutils.h
+│   │   ├── qgsauthconfig.cpp
+│   │   ├── qgsauthconfig.h
+│   │   ├── qgsauthcrypto.cpp
+│   │   ├── qgsauthcrypto.h
+│   │   ├── qgsauthmanager.cpp
+│   │   ├── qgsauthmanager.h
+│   │   ├── qgsauthmethod.h
+│   │   ├── qgsauthmethodmetadata.cpp
+│   │   ├── qgsauthmethodmetadata.h
+│   │   ├── qgsauthmethodregistry.cpp
+│   │   └── qgsauthmethodregistry.h
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span>├── gui
+│   ├── auth
+│   │   ├── qgsauthauthoritieseditor.cpp
+│   │   ├── qgsauthauthoritieseditor.h
+│   │   ├── qgsauthcertificateinfo.cpp
+│   │   ├── qgsauthcertificateinfo.h
+│   │   ├── qgsauthcertificatemanager.cpp
+│   │   ├── qgsauthcertificatemanager.h
+│   │   ├── qgsauthcerttrustpolicycombobox.cpp
+│   │   ├── qgsauthcerttrustpolicycombobox.h
+│   │   ├── qgsauthconfigedit.cpp
+│   │   ├── qgsauthconfigedit.h
+│   │   ├── qgsauthconfigeditor.cpp
+│   │   ├── qgsauthconfigeditor.h
+│   │   ├── qgsauthconfigidedit.cpp
+│   │   ├── qgsauthconfigidedit.h
+│   │   ├── qgsauthconfigselect.cpp
+│   │   ├── qgsauthconfigselect.h
+│   │   ├── qgsautheditorwidgets.cpp
+│   │   ├── qgsautheditorwidgets.h
+│   │   ├── qgsauthguiutils.cpp
+│   │   ├── qgsauthguiutils.h
+│   │   ├── qgsauthidentitieseditor.cpp
+│   │   ├── qgsauthidentitieseditor.h
+│   │   ├── qgsauthimportcertdialog.cpp
+│   │   ├── qgsauthimportcertdialog.h
+│   │   ├── qgsauthimportidentitydialog.cpp
+│   │   ├── qgsauthimportidentitydialog.h
+│   │   ├── qgsauthmasterpassresetdialog.cpp
+│   │   ├── qgsauthmasterpassresetdialog.h
+│   │   ├── qgsauthmethodedit.h
+│   │   ├── qgsauthserverseditor.cpp
+│   │   ├── qgsauthserverseditor.h
+│   │   ├── qgsauthsslconfigwidget.cpp
+│   │   ├── qgsauthsslconfigwidget.h
+│   │   ├── qgsauthsslerrorsdialog.cpp
+│   │   ├── qgsauthsslerrorsdialog.h
+│   │   ├── qgsauthsslimportdialog.cpp
+│   │   ├── qgsauthsslimportdialog.h
+│   │   ├── qgsauthtrustedcasdialog.cpp
+│   │   └── qgsauthtrustedcasdialog.h
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span>└── ui
+    ├── auth
+    │   ├── qgsauthauthoritieseditor.ui
+    │   ├── qgsauthcertificateinfo.ui
+    │   ├── qgsauthcertificatemanager.ui
+    │   ├── qgsauthconfigedit.ui
+    │   ├── qgsauthconfigeditor.ui
+    │   ├── qgsauthconfigidedit.ui
+    │   ├── qgsauthconfigselect.ui
+    │   ├── qgsauthconfiguriedit.ui
+    │   ├── qgsautheditorwidgets.ui
+    │   ├── qgsauthidentitieseditor.ui
+    │   ├── qgsauthimportcertdialog.ui
+    │   ├── qgsauthimportidentitydialog.ui
+    │   ├── qgsauthmasterpassresetdialog.ui
+    │   ├── qgsauthmethodplugins.ui
+    │   ├── qgsauthserverseditor.ui
+    │   ├── qgsauthsslconfigwidget.ui
+    │   ├── qgsauthsslerrorsdialog.ui
+    │   ├── qgsauthsslimportdialog.ui
+    │   ├── qgsauthsslimporterrors.ui
+    │   └── qgsauthtrustedcasdialog.ui
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span>├── core
+│   ├── qgscredentials.cpp
+│   ├── qgscredentials.h
+├── gui
+│   ├── qgscredentialdialog.cpp
+│   ├── qgscredentialdialog.h
+└── ui
+    ├── qgscredentialdialog.ui
+</pre></div>
+</div>
+</div>
+</div>
+
+
+      <!-- Next/Prev -->
+      <div class="selfclear pagination-nav">
+          <div class="left"><strong>Previous</strong>: <a href="index.html" title="previous chapter">QGIS Authentication System Method Plugins Workshop</a></div>
+          <div class="right"><strong>Next</strong>: <a href="plugins.html" title="next chapter">Authentication Method Plugins</a></div>
+      </div>
+
+  <!--
+    &copy; Copyright 2016, Boundless
+  -->
+
+  </div> <!-- rightbar_main -->
+
+  <div id="rightbar_bar">
+    
+      <div id="toc" class="section">
+        <h4 class="pngfix">Table Of Contents</h4>
+        <ul>
+<li><a class="reference internal" href="#">Authentication System Technical Overview</a><ul>
+<li><a class="reference internal" href="#auth-specific-contents-of-src">Auth-specific Contents of SRC</a></li>
+</ul>
+</li>
+</ul>
+
+        <div class="section-footer"></div>
+      </div>
+        <div class="section">
+          <h3>Continue Reading</h3>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="index.html" title="previous chapter">QGIS Authentication System Method Plugins Workshop</a></p>
+          <p><b>Next:</b> <a href="plugins.html" title="next chapter">Authentication Method Plugins</a></p>
+          </ul>
+        </div>
+        <div class="section">
+        <h4>This Page</h4>
+        <ul class="this-page-menu">
+          <li><a href="_sources/overview.txt">Show Source</a></li>
+        </ul>
+        </div>
+
+   <h4>About Boundless</h4>
+   <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png" /></a></p>
+<!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="plugins.html" title="Authentication Method Plugins"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="index.html" title="QGIS Authentication System Method Plugins Workshop"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+  </div> <!-- rightbar_bar -->
+
+  </div> <!-- content -->
+  <div id="footer">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="span12 footer-sub-menu">
+                    <div class="menu-footer-menu-container">
+                        <ul id="menu-footer-menu" class="menu">
+                            <li>
+    <a href="http://boundlessgeo.com/">&copy; Copyright 2016, Boundless</a>
+                            </li>
+                            <li><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div><!-- footer -->
+
+</div><!-- container -->
+
+<!--<script type="text/javascript" src="_static/dropdown.js"></script>-->
+
+  </body>
+</html>

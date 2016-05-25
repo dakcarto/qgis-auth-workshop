@@ -1,0 +1,13 @@
+.. _auth_python_bindings:
+
+PyQGIS Auth System Bindings
+===========================
+
+What's included
+---------------
+
+What's not included
+-------------------
+
+AuthCfg Example
+---------------

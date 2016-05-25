@@ -1,0 +1,179 @@
+<!--
+ (c) 2016 Boundless, http://boundlessgeo.com
+ This work is licensed under CC-BY-SA 3.0 US License. 
+-->
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : QGIS Auth Plugin Workshop : Boundless QGIS Plugin Repository</title>
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/extra.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="top" title="QGIS Auth Plugin Workshop 1.0 documentation" href="index.html" />
+<style>
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Oblique.ttf'); font-weight:oblique; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Bold.ttf'); font-weight:bold; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Regular.ttf'); }
+  @font-face { font-family: proxima-nova-light; src: url('_static/ProximaNova-Light.ttf'); }
+  @font-face { font-family: proxima-nova-semibold; src: url('_static/ProximaNova-SBold.ttf'); }
+  @font-face { font-family: Source Code Pro; src: url('_static/SourceCodePro-Regular.ttf'); }
+</style>
+
+<link rel="stylesheet" id="style-css" href="_static/style.css" type="text/css" media="all">
+
+</head>
+<body class="page">
+
+    <div id="wrapper">
+                <header id="masthead" class="site-header" role="banner">
+            <div class="container">
+                <a href="http://boundlessgeo.com" rel="home" id="logo"><img src="_static/logo.png"></a>
+                <div class="pull-right">
+                    <div class="pull-left">
+                        <div class="menu-main-container">
+                        </div>
+                    </div>
+                    <!--
+                    <div class="search dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="search-icon"></i></a>
+                          <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <form class="search" action="search.html" method="get">
+                                  <label for="q" class="screen-reader-text">Search</label>
+                                  <input type="text" class="field" name="q" placeholder="Search …" />
+                                  <input type="submit" class="submit" value="Go" />
+                                  <input type="hidden" name="check_keywords" value="yes" />
+                                  <input type="hidden" name="area" value="default" />
+                                </form>
+                          </div>
+                    </div>-->
+                </div>
+            </div><!--closes container-->
+
+        </header><div id="pageheading"><div class="contents"><h1>QGIS Auth Plugin Workshop</h1></div></div>
+
+  <div id="content" class="contents">
+<div id="breadcrumbs">
+  <a href="index.html">QGIS Auth Plugin Workshop</a>
+  
+     &raquo; <a href="">Boundless QGIS Plugin Repository</a>
+</div>
+
+  <div id="rightbar_main">
+      
+  <div class="section" id="boundless-qgis-plugin-repository">
+<h1>Boundless QGIS Plugin Repository<a class="headerlink" href="#boundless-qgis-plugin-repository" title="Permalink to this headline">¶</a></h1>
+<p>QGIS&#8217;s functionality can be remarkably extended by the use of plugins.</p>
+<p>This is the QGIS plugin repository for <a class="reference external" href="http://boundlessgeo.com">Boundless</a> plugins that are not in the
+<a class="reference external" href="http://plugins.qgis.org/">official QGIS repository</a>.</p>
+<div class="section" id="using-the-repository-in-qgis">
+<h2>Using the repository in QGIS<a class="headerlink" href="#using-the-repository-in-qgis" title="Permalink to this headline">¶</a></h2>
+<p>If you are using <cite>Boundless Desktop</cite>, this repository should be already available in its QGIS along with the <a class="reference external" href="http://boundlessgeo.github.io/qgis-plugins-documentation/connect/index.html">Boundless Connect plugin</a>. Otherwise, if you are using QGIS from one of the community&#8217;s installers, you can setup this repository in the <cite>Plugin manager</cite> by going to <span class="menuselection">Plugins ‣ Manage and install plugins</span> and, in the <span class="guilabel">Settings</span> tab, add a new repository with the following URL:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://qgis.boundlessgeo.com/plugins/plugins.xml">https://qgis.boundlessgeo.com/plugins/plugins.xml</a></li>
+</ul>
+<div class="figure" id="id1">
+<img alt="img/plugin-repo-add.png" src="img/plugin-repo-add.png" />
+<p class="caption"><span class="caption-text">Adding Boundless QGIS plugin repository</span></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">You may wish to check <strong>Show also experimental plugins</strong> as well as
+<strong>Show also deprecated plugins</strong> options. The latter is required to install the
+updated, though deprecated, version of the OpenGeo Explorer plugin.</p>
+</div>
+</div>
+<div class="section" id="browsing-the-repository">
+<h2>Browsing the repository<a class="headerlink" href="#browsing-the-repository" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://qgis.boundlessgeo.com/plugins/plugins.xml">Available plugins</a></li>
+<li><a class="reference external" href="https://qgis.boundlessgeo.com/plugins/packages">Archives of released versions</a></li>
+<li><a class="reference external" href="https://qgis.boundlessgeo.com/plugins/packages-auth">Archives of secured versions</a> (requires authentication)</li>
+</ul>
+</div>
+<div class="section" id="looking-for-something-else">
+<h2>Looking for something else?<a class="headerlink" href="#looking-for-something-else" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Boundless plugins in the official <a class="reference external" href="http://plugins.qgis.org/search/?q=boundless">QGIS plugin repository</a></li>
+<li>Boundless <a class="reference external" href="http://boundlessgeo.github.io/qgis-plugins-documentation">Plugins documentation</a></li>
+<li>Boundless <a class="reference external" href="http://suite.opengeo.org/opengeo-docs/qgis">QGIS documentation</a></li>
+<li>Older <a class="reference external" href="http://suite.opengeo.org/opengeo-docs/qgis/explorer">OpenGeo Explorer documentation</a></li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">OpenGeo Explorer is deprecated and users are recommended to migrate
+to the new <a class="reference external" href="http://plugins.qgis.org/plugins/geoserverexplorer/">GeoServer Explorer</a> plugin.</p>
+</div>
+</div>
+</div>
+
+
+
+  <!--
+    &copy; Copyright 2016, Boundless
+  -->
+
+  </div> <!-- rightbar_main -->
+
+  <div id="rightbar_bar">
+    
+      <div id="toc" class="section">
+        <h4 class="pngfix">Table Of Contents</h4>
+        <ul>
+<li><a class="reference internal" href="#">Boundless QGIS Plugin Repository</a><ul>
+<li><a class="reference internal" href="#using-the-repository-in-qgis">Using the repository in QGIS</a></li>
+<li><a class="reference internal" href="#browsing-the-repository">Browsing the repository</a></li>
+<li><a class="reference internal" href="#looking-for-something-else">Looking for something else?</a></li>
+</ul>
+</li>
+</ul>
+
+        <div class="section-footer"></div>
+      </div>
+        <div class="section">
+        <h4>This Page</h4>
+        <ul class="this-page-menu">
+          <li><a href="_sources/index_old.txt">Show Source</a></li>
+        </ul>
+        </div>
+
+   <h4>About Boundless</h4>
+   <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png" /></a></p>
+<!--
+<ul id="relatedlinks" class="selfclear">
+</ul> -->
+  </div> <!-- rightbar_bar -->
+
+  </div> <!-- content -->
+  <div id="footer">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="span12 footer-sub-menu">
+                    <div class="menu-footer-menu-container">
+                        <ul id="menu-footer-menu" class="menu">
+                            <li>
+    <a href="http://boundlessgeo.com/">&copy; Copyright 2016, Boundless</a>
+                            </li>
+                            <li><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div><!-- footer -->
+
+</div><!-- container -->
+
+<!--<script type="text/javascript" src="_static/dropdown.js"></script>-->
+
+  </body>
+</html>

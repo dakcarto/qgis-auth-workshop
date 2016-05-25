@@ -1,0 +1,209 @@
+<!--
+ (c) 2016 Boundless, http://boundlessgeo.com
+ This work is licensed under CC-BY-SA 3.0 US License. 
+-->
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : QGIS Auth Plugin Workshop : Authentication Method Plugins</title>
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/extra.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="top" title="QGIS Auth Plugin Workshop 1.0 documentation" href="index.html" />
+      <link rel="next" title="Authentication System Integrations" href="integrations.html" />
+      <link rel="prev" title="Authentication System Technical Overview" href="overview.html" />
+<style>
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Oblique.ttf'); font-weight:oblique; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Bold.ttf'); font-weight:bold; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Regular.ttf'); }
+  @font-face { font-family: proxima-nova-light; src: url('_static/ProximaNova-Light.ttf'); }
+  @font-face { font-family: proxima-nova-semibold; src: url('_static/ProximaNova-SBold.ttf'); }
+  @font-face { font-family: Source Code Pro; src: url('_static/SourceCodePro-Regular.ttf'); }
+</style>
+
+<link rel="stylesheet" id="style-css" href="_static/style.css" type="text/css" media="all">
+
+</head>
+<body class="page">
+
+    <div id="wrapper">
+                <header id="masthead" class="site-header" role="banner">
+            <div class="container">
+                <a href="http://boundlessgeo.com" rel="home" id="logo"><img src="_static/logo.png"></a>
+                <div class="pull-right">
+                    <div class="pull-left">
+                        <div class="menu-main-container">
+                        </div>
+                    </div>
+                    <!--
+                    <div class="search dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="search-icon"></i></a>
+                          <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <form class="search" action="search.html" method="get">
+                                  <label for="q" class="screen-reader-text">Search</label>
+                                  <input type="text" class="field" name="q" placeholder="Search …" />
+                                  <input type="submit" class="submit" value="Go" />
+                                  <input type="hidden" name="check_keywords" value="yes" />
+                                  <input type="hidden" name="area" value="default" />
+                                </form>
+                          </div>
+                    </div>-->
+                </div>
+            </div><!--closes container-->
+
+        </header><div id="pageheading"><div class="contents"><h1>QGIS Auth Plugin Workshop</h1></div></div>
+
+  <div id="content" class="contents">
+<div id="breadcrumbs">
+  <a href="index.html">QGIS Auth Plugin Workshop</a>
+  
+     &raquo; <a href="">Authentication Method Plugins</a>
+</div>
+
+  <div id="rightbar_main">
+      
+  <div class="section" id="authentication-method-plugins">
+<span id="auth-method-plugins"></span><h1>Authentication Method Plugins<a class="headerlink" href="#authentication-method-plugins" title="Permalink to this headline">¶</a></h1>
+<p>Method plugins are where all authentication configurations are &#8216;expanded&#8217; into
+connection objects passed by the Auth Manager. Upon instantiation, the Manager
+loads all auth method plugins into a registry. When a data provider (or whatever
+calling object that is integrated with the auth system) calls the Manager to do
+generic expansion routines, the Manager figures out which method plugin is
+approriate to use, relative to the method associated with the auth config <em>and</em>
+whether the method supports the expected expansion. Whether a method plugin
+supports a particular type of expansion, e.g. <code class="docutils literal"><span class="pre">QNetworkRequest</span></code> or
+<code class="docutils literal"><span class="pre">QgsDataSourceURI</span></code> or both, is up to the plugin author.</p>
+<div class="section" id="initial-design">
+<span id="method-initial-design"></span><h2>Initial Design<a class="headerlink" href="#initial-design" title="Permalink to this headline">¶</a></h2>
+<p>The plugin design of <code class="docutils literal"><span class="pre">QgsAuthMethodRegistry</span></code> and <code class="docutils literal"><span class="pre">QgsAuthMethod</span></code> was
+essentially copied from that of <code class="docutils literal"><span class="pre">QgsProviderRegistry</span></code> and <code class="docutils literal"><span class="pre">QgsDataProvider</span></code>.
+This means the plugins can only be loaded at QGIS launch. However, it does allow
+for custom authentication method plugins to be &#8216;dropped&#8217; into existing similar
+QGIS builds, and available upon relaunch. There is currently no factory support
+for creating and registering new <code class="docutils literal"><span class="pre">QgsAuthMethod</span></code> plugins via C++, and no
+Python bindings.</p>
+<p>The latter two limitations were merely due to <em>lack of time</em> to implement. There
+are also security concerns with allowing Python to register (or replace)
+authentication methods.</p>
+<p>All authentication method plugins inherit the base class of:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">src</span><span class="o">/</span><span class="n">core</span><span class="o">/</span><span class="n">auth</span><span class="o">/</span><span class="n">qgsauthmethod</span><span class="o">.</span><span class="n">h</span>
+</pre></div>
+</div>
+<p>From there the author can override and implement (or not) any desired
+expansions. Any new expansions should be added as virtual functions in
+<code class="docutils literal"><span class="pre">qgsauthmethod.h</span></code>.</p>
+</div>
+<div class="section" id="integrate-with-qtnetwork">
+<span id="integrate-qtnetwork"></span><h2>Integrate with QtNetwork<a class="headerlink" href="#integrate-with-qtnetwork" title="Permalink to this headline">¶</a></h2>
+<p>There are the following virtual function expansions:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># most common approach for HTTP URL or header expansion</span>
+<span class="n">QgsAuthManager</span><span class="p">::</span><span class="n">updateNetworkRequest</span><span class="p">(</span> <span class="n">QNetworkRequest</span> <span class="o">&amp;</span><span class="n">request</span><span class="p">,</span> <span class="o">...</span> <span class="p">)</span>
+
+<span class="c1"># not generally needed</span>
+<span class="n">QgsAuthManager</span><span class="p">::</span><span class="n">updateNetworkReply</span><span class="p">(</span> <span class="n">QNetworkReply</span> <span class="o">*</span><span class="n">reply</span><span class="p">,</span> <span class="o">...</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Review function API comments</em></p>
+</div>
+<div class="section" id="integration-with-qgsdatasourceuri">
+<span id="integrate-qgsdatasourceuri"></span><h2>Integration with QgsDataSourceURI<a class="headerlink" href="#integration-with-qgsdatasourceuri" title="Permalink to this headline">¶</a></h2>
+<p>There is the following virtual function expansion:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QgsAuthManager</span><span class="p">::</span><span class="n">updateDataSourceUriItems</span><span class="p">(</span> <span class="n">QStringList</span> <span class="o">&amp;</span><span class="n">connectionItems</span><span class="p">,</span> <span class="o">...</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Review function API comments</em></p>
+</div>
+<div class="section" id="other-integrations">
+<h2>Other integrations<a class="headerlink" href="#other-integrations" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      <!-- Next/Prev -->
+      <div class="selfclear pagination-nav">
+          <div class="left"><strong>Previous</strong>: <a href="overview.html" title="previous chapter">Authentication System Technical Overview</a></div>
+          <div class="right"><strong>Next</strong>: <a href="integrations.html" title="next chapter">Authentication System Integrations</a></div>
+      </div>
+
+  <!--
+    &copy; Copyright 2016, Boundless
+  -->
+
+  </div> <!-- rightbar_main -->
+
+  <div id="rightbar_bar">
+    
+      <div id="toc" class="section">
+        <h4 class="pngfix">Table Of Contents</h4>
+        <ul>
+<li><a class="reference internal" href="#">Authentication Method Plugins</a><ul>
+<li><a class="reference internal" href="#initial-design">Initial Design</a></li>
+<li><a class="reference internal" href="#integrate-with-qtnetwork">Integrate with QtNetwork</a></li>
+<li><a class="reference internal" href="#integration-with-qgsdatasourceuri">Integration with QgsDataSourceURI</a></li>
+<li><a class="reference internal" href="#other-integrations">Other integrations</a></li>
+</ul>
+</li>
+</ul>
+
+        <div class="section-footer"></div>
+      </div>
+        <div class="section">
+          <h3>Continue Reading</h3>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="overview.html" title="previous chapter">Authentication System Technical Overview</a></p>
+          <p><b>Next:</b> <a href="integrations.html" title="next chapter">Authentication System Integrations</a></p>
+          </ul>
+        </div>
+        <div class="section">
+        <h4>This Page</h4>
+        <ul class="this-page-menu">
+          <li><a href="_sources/plugins.txt">Show Source</a></li>
+        </ul>
+        </div>
+
+   <h4>About Boundless</h4>
+   <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png" /></a></p>
+<!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="integrations.html" title="Authentication System Integrations"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="overview.html" title="Authentication System Technical Overview"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+  </div> <!-- rightbar_bar -->
+
+  </div> <!-- content -->
+  <div id="footer">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="span12 footer-sub-menu">
+                    <div class="menu-footer-menu-container">
+                        <ul id="menu-footer-menu" class="menu">
+                            <li>
+    <a href="http://boundlessgeo.com/">&copy; Copyright 2016, Boundless</a>
+                            </li>
+                            <li><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div><!-- footer -->
+
+</div><!-- container -->
+
+<!--<script type="text/javascript" src="_static/dropdown.js"></script>-->
+
+  </body>
+</html>

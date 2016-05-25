@@ -1,0 +1,183 @@
+<!--
+ (c) 2016 Boundless, http://boundlessgeo.com
+ This work is licensed under CC-BY-SA 3.0 US License. 
+-->
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="UTF-8">
+  
+  <title>Boundless : QGIS Auth Plugin Workshop : Data Provider Integration</title>
+
+  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <link rel="stylesheet" href="_static/opengeo.css" type="text/css"/>
+  <link rel="stylesheet" href="_static/extra.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="top" title="QGIS Auth Plugin Workshop 1.0 documentation" href="index.html" />
+      <link rel="next" title="Auth Method Plugins Examples" href="examples.html" />
+      <link rel="prev" title="Authentication Method Plugins" href="authmethod.html" />
+<style>
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Oblique.ttf'); font-weight:oblique; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Bold.ttf'); font-weight:bold; }
+  @font-face { font-family: cantarell; src: url('_static/Cantarell-Regular.ttf'); }
+  @font-face { font-family: proxima-nova-light; src: url('_static/ProximaNova-Light.ttf'); }
+  @font-face { font-family: proxima-nova-semibold; src: url('_static/ProximaNova-SBold.ttf'); }
+  @font-face { font-family: Source Code Pro; src: url('_static/SourceCodePro-Regular.ttf'); }
+</style>
+
+<link rel="stylesheet" id="style-css" href="_static/style.css" type="text/css" media="all">
+
+</head>
+<body class="page">
+
+    <div id="wrapper">
+                <header id="masthead" class="site-header" role="banner">
+            <div class="container">
+                <a href="http://boundlessgeo.com" rel="home" id="logo"><img src="_static/logo.png"></a>
+                <div class="pull-right">
+                    <div class="pull-left">
+                        <div class="menu-main-container">
+                        </div>
+                    </div>
+                    <!--
+                    <div class="search dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="search-icon"></i></a>
+                          <div class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                <form class="search" action="search.html" method="get">
+                                  <label for="q" class="screen-reader-text">Search</label>
+                                  <input type="text" class="field" name="q" placeholder="Search …" />
+                                  <input type="submit" class="submit" value="Go" />
+                                  <input type="hidden" name="check_keywords" value="yes" />
+                                  <input type="hidden" name="area" value="default" />
+                                </form>
+                          </div>
+                    </div>-->
+                </div>
+            </div><!--closes container-->
+
+        </header><div id="pageheading"><div class="contents"><h1>QGIS Auth Plugin Workshop</h1></div></div>
+
+  <div id="content" class="contents">
+<div id="breadcrumbs">
+  <a href="index.html">QGIS Auth Plugin Workshop</a>
+  
+     &raquo; <a href="">Data Provider Integration</a>
+</div>
+
+  <div id="rightbar_main">
+      
+  <div class="section" id="data-provider-integration">
+<h1>Data Provider Integration<a class="headerlink" href="#data-provider-integration" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="integration-with-ows">
+<span id="integration-ows"></span><h2>Integration with OWS<a class="headerlink" href="#integration-with-ows" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Creating a new file after the first launch of will have no effect whatsoever.
+The plugin will ignore the new file and will continue to use the already
+saved repository location.</p>
+</div>
+<p>The <code class="docutils literal"><span class="pre">$HOME/.qgis2/repoUrl.txt</span></code> file is an INI-like text file with single
+<code class="docutils literal"><span class="pre">general</span></code> section and only one key-value pair, for example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">general</span><span class="p">]</span>
+<span class="n">repoUrl</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">qgis</span><span class="o">.</span><span class="n">boundlessgeo</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">plugins</span><span class="o">.</span><span class="n">xml</span>
+</pre></div>
+</div>
+<p>The value of the <code class="docutils literal"><span class="pre">repoUrl</span></code> key with repository location can be:</p>
+<ul class="simple">
+<li>A <strong>Repository URL</strong>. The plugin will add this URL to the list of available
+plugins repositories and QGIS <em>Plugin Manager</em> can be used to access it. This
+is the default.</li>
+<li>An <strong>absolute path to the plugins directory</strong>. In this case, the directory
+should contain plugins packages as well as repository description file
+<code class="docutils literal"><span class="pre">plugins.xml</span></code>. With this option, nothing is added to the QGIS settings, as
+QGIS <em>Plugin Manager</em> can not handle directories yet.</li>
+</ul>
+</div>
+<div class="section" id="integration-with-postgres">
+<span id="integration-postgres"></span><h2>Integration with Postgres<a class="headerlink" href="#integration-with-postgres" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      <!-- Next/Prev -->
+      <div class="selfclear pagination-nav">
+          <div class="left"><strong>Previous</strong>: <a href="authmethod.html" title="previous chapter">Authentication Method Plugins</a></div>
+          <div class="right"><strong>Next</strong>: <a href="examples.html" title="next chapter">Auth Method Plugins Examples</a></div>
+      </div>
+
+  <!--
+    &copy; Copyright 2016, Boundless
+  -->
+
+  </div> <!-- rightbar_main -->
+
+  <div id="rightbar_bar">
+    
+      <div id="toc" class="section">
+        <h4 class="pngfix">Table Of Contents</h4>
+        <ul>
+<li><a class="reference internal" href="#">Data Provider Integration</a><ul>
+<li><a class="reference internal" href="#integration-with-ows">Integration with OWS</a></li>
+<li><a class="reference internal" href="#integration-with-postgres">Integration with Postgres</a></li>
+</ul>
+</li>
+</ul>
+
+        <div class="section-footer"></div>
+      </div>
+        <div class="section">
+          <h3>Continue Reading</h3>
+          <p style="margin-top:1em"><b>Previous:</b> <a href="authmethod.html" title="previous chapter">Authentication Method Plugins</a></p>
+          <p><b>Next:</b> <a href="examples.html" title="next chapter">Auth Method Plugins Examples</a></p>
+          </ul>
+        </div>
+        <div class="section">
+        <h4>This Page</h4>
+        <ul class="this-page-menu">
+          <li><a href="_sources/providers.txt">Show Source</a></li>
+        </ul>
+        </div>
+
+   <h4>About Boundless</h4>
+   <p>Boundless provides <a href="http://boundlessgeo.com/solutions/">commercial open source software</a> for internet mapping and geospatial application development. We are dedicated to the growth and support of open source software.</p>
+
+    <h4>License</h4>
+    <p>This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a>.  Feel free to use this material, but we ask that you please retain the Boundless branding, logos and style.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-sa/3.0/us/88x31.png" /></a></p>
+<!--
+<ul id="relatedlinks" class="selfclear">
+  <li class="first">
+    <a href="examples.html" title="Auth Method Plugins Examples"
+       accesskey="N">next</a></li>
+  <li>
+    <a href="authmethod.html" title="Authentication Method Plugins"
+       accesskey="P">previous</a>|</li>
+</ul> -->
+  </div> <!-- rightbar_bar -->
+
+  </div> <!-- content -->
+  <div id="footer">
+    <footer id="colophon" class="site-footer" role="contentinfo">
+        <div class="container">
+            <div class="row">
+                <div class="span12 footer-sub-menu">
+                    <div class="menu-footer-menu-container">
+                        <ul id="menu-footer-menu" class="menu">
+                            <li>
+    <a href="http://boundlessgeo.com/">&copy; Copyright 2016, Boundless</a>
+                            </li>
+                            <li><a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/us/">Creative Commons Attribution-Share Alike 3.0 United States License</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div><!-- footer -->
+
+</div><!-- container -->
+
+<!--<script type="text/javascript" src="_static/dropdown.js"></script>-->
+
+  </body>
+</html>
